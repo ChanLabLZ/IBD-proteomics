@@ -1,1 +1,1 @@
-This is script for model construction for post-treatment status assessment.
+This folder is for model construction for post-treatment status assessment.
