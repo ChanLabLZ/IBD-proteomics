@@ -7,6 +7,7 @@ library(readxl)
 library(patchwork)
 library(ComplexHeatmap)
 library(circlize)
+library(patchwork)
 
 ExtractProteinName <- function(rawProtein){
   cleanName <- c()
@@ -18,7 +19,7 @@ ExtractProteinName <- function(rawProtein){
 
 # DEPs a1 vs a2 in Responders --------------
 ## read the DEP1 of NR ---------------
-DEP1NR <- MyReadDelim("./a1_preNRvsPostNR_deg2.txt", sep='\t')
+DEP1NR <- read.delim("./a1_preNRvsPostNR_deg2.txt", sep='\t')
 DEP1NR$protein2 <- ExtractProteinName(DEP1NR$protein)
 
 proteinNames <- DEP1NR[,c('protein', 'protein2')]
@@ -27,14 +28,13 @@ rownames(proteinNames) <- proteinNames$protein2
 DEP1NR <- DEP1NR[DEP1NR$type!='NOT',]
 
 ## read the DEP2 of NR ---------------
-DEP2NR <- MyReadDelim("./a2_preNRvsPostNR_deg2.txt", sep='\t')
+DEP2NR <- read.delim("./a2_preNRvsPostNR_deg2.txt", sep='\t')
 DEP2NR$protein2 <- ExtractProteinName(DEP2NR$protein)
 DEP2NR <- DEP2NR[DEP2NR$type!='NOT',]
 
 
 ## Venn of DEP1NR and DEP2NR -----------
-library(Vennerable)
-pdf("./Protein/a1_pre_post/a1vsa2_pre_post_Venn_inNR.pdf",6,5)
+pdf("./a1vsa2_pre_post_Venn_inNR.pdf",6,5)
 plot(Venn(list("DEP1NR" = unique(DEP1NR$protein2),
                "DEP2NR" = unique(DEP2NR$protein2))),
      doWeight=T)
@@ -52,7 +52,7 @@ MyGeneV(unique(DEP1NR$protein2), unique(DEP2NR$protein2))
 
 ## example to show -----------
 ### read protein matrix ------------- 
-df_final <- read_excel('./Protein/2nd/2-Input/protein_Samplematrix_imputeNA1.xlsx')
+df_final <- read_excel('../protein_Samplematrix_imputeNA1.xlsx')
 df_final <- as.data.frame(df_final)
 rownames(df_final) <- df_final$protein
 df_final <- df_final[,-1]
@@ -61,7 +61,7 @@ df_final[1:4,1:4]
 merge.final <- df_final
 
 ### read sample information ------------- 
-sampleInfor <- read_excel("./XHOM_PM_sampleInfor.xlsx")
+sampleInfor <- read_excel("../XHOM_PM_sampleInfor.xlsx")
 sampleInfor <- as.data.frame(sampleInfor)
 sampleInfor$Type
 
@@ -109,7 +109,7 @@ sample.inf <- merged_df
 rm(merged_df)
 rownames(sample.inf) <- sample.inf$col
 
-pre_a1 <- read_excel("./Sample_Pre_Post.xlsx")
+pre_a1 <- read_excel("../Sample_Pre_Post.xlsx")
 pre_a1 <- as.data.frame(pre_a1)
 pre_a1 <- pre_a1[pre_a1$Group=='a1',]
 
@@ -134,8 +134,7 @@ a1_sample.inf$Group_WF3 <- 'a1'
 
 ### select pre samples by a2 --------
 
-library(readxl)
-sampleInfor <- read_excel("./XHOM_PM_sampleInfor.xlsx")
+sampleInfor <- read_excel("../XHOM_PM_sampleInfor.xlsx")
 sampleInfor <- as.data.frame(sampleInfor)
 sampleInfor$Type
 
@@ -183,7 +182,7 @@ sample.inf <- merged_df
 rm(merged_df)
 rownames(sample.inf) <- sample.inf$col
 
-pre_a2 <- read_excel("./Sample_Pre_Post.xlsx")
+pre_a2 <- read_excel("../Sample_Pre_Post.xlsx")
 pre_a2 <- as.data.frame(pre_a2)
 pre_a2 <- pre_a2[pre_a2$Group=='a2',]
 
@@ -288,7 +287,7 @@ right_ha <- rowAnnotation(
                    side = "right"))
 
 
-pdf("./Protein/a1_pre_post/a1vsa2_pre_post.Heatmap.1_inNR.new.pdf",5.5,7)
+pdf("./a1vsa2_pre_post.Heatmap.1_inNR.new.pdf",5.5,7)
 Heatmap(t(scale(t(plot_res[,c('a1preNR','a1postNR','a2preNR','a2postNR')]))),
         name = "z-score",
         show_row_names = F,
@@ -304,9 +303,9 @@ Heatmap(t(scale(t(plot_res[,c('a1preNR','a1postNR','a2preNR','a2postNR')]))),
 dev.off()
 
 MyWriteTab(t(scale(t(plot_res[,c('a1preNR','a1postNR','a2preNR','a2postNR')]))),
-           row.names = T, "./Protein/a1_pre_post/a1vsa2_pre_post.Heatmap.1_inNR.new.csv", sep=',')
+           row.names = T, "./a1vsa2_pre_post.Heatmap.1_inNR.new.csv", sep=',')
 
-pdf("./Protein/a1_pre_post/a1vsa2_pre_post.Heatmap.1_inNR.pdf",4,15)
+pdf("./a1vsa2_pre_post.Heatmap.1_inNR.pdf",4,15)
 Heatmap(t(scale(t(plot_res[,c('a1preNR','a1postNR','a2preNR','a2postNR')]))),
         name = "z-score",
         show_row_names = T,
@@ -357,7 +356,7 @@ plot2show$Q86XP3_DDX42 <- unlist(merge.final['Q86XP3_DDX42', plot2show$col])
 plot2show$Q8IWZ3_ANKHD1 <- unlist(merge.final['Q8IWZ3_ANKHD1', plot2show$col])
 
 
-MyWriteTab(plot2show, "./Protein/a1_pre_post/a1vsa2_plot2show_inNR.csv", sep=',')
+MyWriteTab(plot2show, "./a1vsa2_plot2show_inNR.csv", sep=',')
 
 
 MyRunPlot2show2 <- function(plot2show, colName, selSample){
@@ -401,8 +400,7 @@ p11 <- MyRunPlot2show2(plot2show,'Q86XP3_DDX42',selSample='NR')
 p12 <- MyRunPlot2show2(plot2show,'Q8IWZ3_ANKHD1',selSample='NR')
 
 
-library(patchwork)
-pdf("./Protein/a1_pre_post/a1vsa2_pre_post_plot2show_inNR.pdf",11,15)
+pdf("./a1vsa2_pre_post_plot2show_inNR.pdf",11,15)
 p1+p2+p3+p4+p5+p6+p13+p7+p8+p9+p10+p11+p12+plot_layout(guides='collect')
 dev.off()
 
