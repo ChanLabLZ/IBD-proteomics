@@ -5,6 +5,7 @@ setwd("~/Documents/work/20240816_LiangZhu/20251124_PrMetabolism_XHOM_WF/")
 library(readxl)
 library(FactoMineR)
 library(ggplot2)
+library(RColorBrewer)
 
 df_final <- read_excel('../protein_Samplematrix_imputeNA1.xlsx')
 
@@ -79,7 +80,7 @@ pca.coord <- as.data.frame(pca.coord)
 pca.df <- cbind(x.pos = pca.coord[,1],
                 y.pos = pca.coord[,2],
                 sample.inf[row.names(pca.coord),])
-library(RColorBrewer)
+
 color_manual = c(brewer.pal(9,"Set1"))
 color_manual <- color_manual[c(1:5,7)]
 
@@ -111,10 +112,10 @@ ggplot(pca.df, aes(x = x.pos, y = y.pos, col = Type2)) +
   guides(size = guide_none())
 dev.off()
 
-MyWriteTab(pca.df,"./Protein/HC_allIBD/PCA_1.csv", sep=',')
+MyWriteTab(pca.df,"./PCA_1.csv", sep=',')
 
 
-pdf("./Protein/HC_allIBD/PCA.pdf", 7,5.2)
+pdf("./PCA.pdf", 7,5.2)
 ggplot(pca.df, aes(x = x.pos, y = y.pos, col = Group2)) +
   geom_point(size = 5) +
   xlab(paste("PC",1,"(",round(pc.percent[1],1),"%)",sep = "")) +

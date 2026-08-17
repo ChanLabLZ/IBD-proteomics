@@ -1,13 +1,13 @@
 
 rm(list=ls())
 setwd("~/Documents/work/20240816_LiangZhu/20251124_PrMetabolism_XHOM_WF/")
-source("../../public/WFMyFunction.R")
+
+library(readxl)
+library(ggplot2)
 
 
 ## read metascape result ---------------
-library(readxl)
-df <- read_excel('./Protein/WOSP25605_report/附件/3-QC_analysis/statistics/Protein Number_protein_venn_list_2ndMetascape/metascape_result.xlsx', 
-                 sheet = "Enrichment")
+df <- read_excel('./metascape_result.xlsx', sheet = "Enrichment")
 df <- as.data.frame(df)
 
 df_summary <- df[grep('Summary',df$GroupID),]
@@ -17,7 +17,7 @@ merge_res_plot <- df_summary
 merge_res_plot$X_axis <- -1 * (merge_res_plot$LogP)
 tempColor <- colorRampPalette(c("#E57539",'white'))(30)
 
-pdf("./Protein/WOSP25605_report/附件/3-QC_analysis/statistics/Protein Number_protein_venn_list_2ndMetascape/metascape_result.pdf",
+pdf("./metascape_result.pdf",
     5,9)
 ggplot(merge_res_plot, aes(reorder(Description, X_axis), X_axis, fill = X_axis))+
   geom_col()+
