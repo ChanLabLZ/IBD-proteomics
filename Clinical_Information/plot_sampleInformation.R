@@ -4,8 +4,9 @@ setwd("~/Documents/work/20240816_LiangZhu/20251124_PrMetabolism_XHOM_WF/")
 
 library(dplyr)
 library(readxl)
+library(ggpubr)
 
-model_excel <- read_excel("./XHOM_PM_sampleInfor.xlsx")
+model_excel <- read_excel("../XHOM_PM_sampleInfor.xlsx")
 model_excel <- as.data.frame(model_excel)
 
 ## counts ------------

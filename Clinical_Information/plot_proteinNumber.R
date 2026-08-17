@@ -4,6 +4,8 @@ setwd("~/Documents/work/20240816_LiangZhu/20251124_PrMetabolism_XHOM_WF/")
 
 library(dplyr)
 library(readxl)
+library(ggplot2)
+library(RColorBrewer)
 
 protein_counts <- read_excel("./Allsample_ProteinIdentification.2.xlsx")
 protein_counts <- as.data.frame(protein_counts)
@@ -26,12 +28,9 @@ protein_counts$Rank <- c(1:82,1:66,1:53,1:48,1:101,1:153)
 protein_counts <- protein_counts[order(protein_counts$Group, protein_counts$`Identified proteins`),]
 protein_counts$Rank2 <- c(1:101,1:135,1:114,1:153)
 
-
-library(RColorBrewer)
 color_manual = c(brewer.pal(9,"Set1"))
 color_manual <- c("#377EB8","#FF7F00","#984EA3", "#A65628", "#E41A1C", "#999999", "#F781BF","#4DAF4A")
 
-library(ggplot2)
 p1<-ggplot(protein_counts, aes(Rank, `Identified proteins`, col = Group2)) +
     geom_point() + geom_line() +
     theme_wf +
