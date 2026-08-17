@@ -7,7 +7,7 @@ library(FactoMineR)
 library(ggplot2)
 library(ComplexHeatmap)
 library(circlize)
-
+library(Vennerable)
 
 ## read protein matrix ------------- 
 df_final <- read_excel('../protein_Samplematrix_imputeNA1.xlsx')
@@ -134,7 +134,7 @@ df_final2$protein <- row.names(df_final2)
 df_final2$protein2 <- ExtractProteinName(df_final2$protein)
 
 write.table(df_final2[,c('log2FC','p_value','FDR','type','protein')], 
-            "./Protein/a1_pre_post/preNR_postNR/a1_preNRvsPostNR_deg2.txt", sep='\t',
+            "./a1_preNRvsPostNR_deg2.txt", sep='\t',
             quote = F, col.names = T, row.names = F)
 
 
@@ -171,7 +171,7 @@ df_final2$protein <- row.names(df_final2)
 df_final2$protein2 <- ExtractProteinName(df_final2$protein)
 
 write.table(df_final2[,c('log2FC','p_value','FDR','type','protein')], 
-            "./Protein/a1_pre_post/preR_postR/a1_preRvsPostR_deg2.txt", sep='\t',
+            "./a1_preRvsPostR_deg2.txt", sep='\t',
             quote = F, col.names = T, row.names = F)
 
 
@@ -180,13 +180,13 @@ write.table(df_final2[,c('log2FC','p_value','FDR','type','protein')],
 ## read DEP --------------------
 library(Vennerable)
 
-a1_preNRvsPostNR_deg2 <- MyReadDelim("./Protein/a1_pre_post/preNR_postNR/a1_preNRvsPostNR_deg2.txt", sep='\t')
+a1_preNRvsPostNR_deg2 <- read.delim("./a1_preNRvsPostNR_deg2.txt", sep='\t')
 # a1_preNRvsPostNR_deg2 <- a1_preNRvsPostNR_deg2[a1_preNRvsPostNR_deg2$type!='NOT',]
 a1_preNRvsPostNR_deg2$type2 <- paste0('preNRvspostNR',a1_preNRvsPostNR_deg2$type)
 a1_preNRvsPostNR_deg2$protein2 <- ExtractProteinName(a1_preNRvsPostNR_deg2$protein)
 a1_preNRvsPostNR_deg2$Group <- 'NR'
 
-a1_preRvsPostR_deg2 <- MyReadDelim("./Protein/a1_pre_post/preR_postR/a1_preRvsPostR_deg2.txt", sep='\t')
+a1_preRvsPostR_deg2 <- read.delim("./a1_preRvsPostR_deg2.txt", sep='\t')
 # a1_preRvsPostR_deg2 <- a1_preRvsPostR_deg2[a1_preRvsPostR_deg2$type != 'NOT',]
 a1_preRvsPostR_deg2$type2 <- paste0('preRvspostR',a1_preRvsPostR_deg2$type)
 a1_preRvsPostR_deg2$protein2 <- ExtractProteinName(a1_preRvsPostR_deg2$protein)
@@ -198,7 +198,7 @@ a1_preRvsPostR_deg2$Group <- 'R'
 mergeAll <- rbind(a1_preNRvsPostNR_deg2,a1_preRvsPostR_deg2)
 library(ggplot2)
 
-pdf("./Protein/a1_pre_post/pre_post_DE_protein.2.pdf",6.2,5)
+pdf("./pre_post_DE_protein.2.pdf",6.2,5)
 ggplot(mergeAll, aes(log2FC, -log10(p_value), col = type, shape = Group)) +
   geom_point(size = 2) +
   labs(x = 'log2(Post/Pre)', y = '-log10(p_value)') +
@@ -243,7 +243,7 @@ dev.off()
 
 
 ## plot venn ----------
-pdf("./Protein/a1_pre_post/pre_post_Venn.pdf",6,5)
+pdf("./pre_post_Venn.pdf",6,5)
 plot(Venn(list("NR" = a1_preNRvsPostNR_deg2[a1_preNRvsPostNR_deg2$type!='NOT','protein2'],
                "R" = a1_preRvsPostR_deg2[a1_preRvsPostR_deg2$type != 'NOT','protein2'])),
      doWeight=T)
@@ -277,7 +277,7 @@ library(RColorBrewer)
 color_manual = c(brewer.pal(9,"Set1"))
 
 
-pdf("./Protein/a1_pre_post/pre_post_PCA_usingDeg2.pdf", 5.5,4)
+pdf("./pre_post_PCA_usingDeg2.pdf", 5.5,4)
 ggplot(pca.df, aes(x = x.pos, y = y.pos, col = Group_prepost)) +
   geom_point(aes(size = 5)) +
   xlab(paste("PC",1,"(",round(pc.percent[1],1),"%)",sep = "")) +
@@ -322,7 +322,7 @@ ggplot(pca.df, aes(x = x.pos, y = y.pos, col = Group_prepost, shape = Group_WF))
 dev.off()
 
 
-MyWriteTab(pca.df, "./Protein/a1_pre_post/pre_post_PCA_usingDeg2.csv", sep=',')
+MyWriteTab(pca.df, "./pre_post_PCA_usingDeg2.csv", sep=',')
 
 
 
@@ -376,7 +376,7 @@ right_ha <- rowAnnotation(
                    which = "row", 
                    side = "right"))
 
-pdf("./Protein/a1_pre_post/pre_post.Heatmap.pdf",8,7)
+pdf("./pre_post.Heatmap.pdf",8,7)
 Heatmap(t(scale(t(merge.final[geneDf$protein,orderSample$col]))),
         name = "z-score",
         show_row_names = F,
@@ -392,7 +392,7 @@ Heatmap(t(scale(t(merge.final[geneDf$protein,orderSample$col]))),
 dev.off()
 
 MyWriteTab(t(scale(t(merge.final[geneDf$protein,orderSample$col]))),row.names = T,
-           "./Protein/a1_pre_post/pre_post.Heatmap.csv", sep=',')
+           "./pre_post.Heatmap.csv", sep=',')
 
 
 ## plot heatmap 2: Select DEP --------------------
@@ -407,7 +407,7 @@ selectProtein <- c('SAA1','SAA2', 'CRP','FCGR3A','PLA2G2A','C9','AGPAT2', # Acut
                    # 'IHH','PRDX2','PGLYRP2' # negative regulation of hemopoiesis
                    )
 
-a1_preNRvsPostNR_deg2 <- MyReadDelim("./Protein/a1_pre_post/preNR_postNR/a1_preNRvsPostNR_deg2.txt", sep='\t')
+a1_preNRvsPostNR_deg2 <- read.delim("./a1_preNRvsPostNR_deg2.txt", sep='\t')
 a1_preNRvsPostNR_deg2$type2 <- paste0('preNRvspostNR',a1_preNRvsPostNR_deg2$type)
 a1_preNRvsPostNR_deg2$protein2 <- ExtractProteinName(a1_preNRvsPostNR_deg2$protein)
 a1_preNRvsPostNR_deg2$Group <- 'NR'
@@ -425,7 +425,7 @@ rownames(plot_res) <- tt$protein2
 plot_res <- plot_res[selectProtein,]
 
 
-pdf("./Protein/a1_pre_post/pre_post.Heatmap.2.pdf",5,8)
+pdf("./pre_post.Heatmap.2.pdf",5,8)
 Heatmap(t(scale(t(plot_res))),
         name = "z-score",
         show_row_names = T,
@@ -460,7 +460,7 @@ plot2show$Q9H257_CARD9 <- unlist(merge.final['Q9H257_CARD9', plot2show$col])
 plot2show$P21980_TGM2 <- unlist(merge.final['P21980_TGM2', plot2show$col])
 
 
-MyWriteTab(plot2show, "./Protein/a1_pre_post/plot2show_1.csv", sep=',')
+MyWriteTab(plot2show, "./plot2show_1.csv", sep=',')
 
 # [1] "O00291_HIP1"    "O15120_AGPAT2"  "O43707_ACTN4"   "P02741_CRP"     "P02748_C9"      "P06727_APOA4"   "P07942_LAMB1"   "P08637_FCGR3A" 
 # [9] "P0DJI8_SAA1"    "P0DJI9_SAA2"    "P13942_COL11A2" "P14555_PLA2G2A" "P22004_BMP6"    "P32119_PRDX2"   "P48061_CXCL12"  "P49747_COMP"   
@@ -502,7 +502,7 @@ p11 <- MyRunPlot2show(plot2show,'P55290_CDH13')
 p12 <- MyRunPlot2show(plot2show,'Q9H257_CARD9')
 p13 <- MyRunPlot2show(plot2show,'P21980_TGM2')
 
-pdf("./Protein/a1_pre_post/pre_post_plot2show.pdf",11.5,16)
+pdf("./pre_post_plot2show.pdf",11.5,16)
 p1+p2+p3+p4+p5+p6+p7+p8+p9+p10+p11+p12+p13
 dev.off()
 
