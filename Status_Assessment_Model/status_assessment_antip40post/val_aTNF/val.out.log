@@ -1,0 +1,38 @@
+
+============================================================
+Model Validation
+============================================================
+
+Loading model from: ../final_model_lr.pkl
+Model type: LR
+Features used: 5
+Feature list: ['P27487_DPP4', 'Q08378_GOLGA3', 'P0DJI9_SAA2', 'P14555_PLA2G2A', 'Q14CX7_NAA25']
+Loading new data...
+Group
+NR    82
+R     66
+Name: count, dtype: int64 
+
+state
+0    82
+1    66
+Name: count, dtype: int64 
+
+新数据样本数: 148
+最终特征数: 5
+
+============================================================
+LR Validation Results
+============================================================
+      accuracy: 0.6149
+     precision: 0.5763
+        recall: 0.5152
+            f1: 0.5440
+           auc: 0.6851
+  混淆矩阵:    TN=57 FP=25 | FN=32 TP=34
+已保存: validation_predictions.csv
+已保存: validation_confusion_matrix.csv
+
+============================================================
+Validation 完成
+============================================================

@@ -1,0 +1,185 @@
+
+============================================================
+LASSO + LogisticRegressionCV + RandomForest 完整流程
+样本量适中场景 (n≈90, p≈80)
+============================================================
+
+Group
+NR    72
+R     59
+Name: count, dtype: int64 
+
+state
+0    72
+1    59
+Name: count, dtype: int64 
+
+全量特征数: 76
+训练集: 91 样本
+测试集: 40 样本
+类别分布: train NR(0)/R(1) = 50/41  test NR(0)/R(1) = 22/18
+
+============================================================
+步骤1：LASSO特征选择（LOOCV 选 alpha）
+============================================================
+样本数: 91, CV 策略: 5-fold
+最优 alpha 值: 0.065754
+LASSO 选中特征数: 8/76
+LASSO 最重要的 5 个特征:
+  P02748_C9: coeff=-0.0696
+  P02741_CRP: coeff=-0.0666
+  Q9HCL0_PCDH18: coeff=0.0586
+  P49747_COMP: coeff=0.0574
+  P0DJI9_SAA2: coeff=-0.0455
+
+============================================================
+步骤2：LogisticRegressionCV（CV 选 C + LOOCV 评估）
+============================================================
+LASSO 选了 8 个 (<=10), 全部使用
+5-fold CV AUC: 0.8675 (+/- 0.1722)
+
+LogisticRegressionCV 最优 C 值: 0.0464
+C 值搜索范围: [0.0001, 10000.0000]
+各 C 值 CV 均分: ['0.8808', '0.8808', '0.8858', '0.8878', '0.8775', '0.8689', '0.8589', '0.8564', '0.8564', '0.8564']
+
+----------------------------------------
+训练集性能:
+----------------------------------------
+  AUC:         0.8941
+  混淆矩阵:    TN=39 FP=11 | FN=7 TP=34
+已保存: train_predictions_lr.csv, train_confusion_matrix_lr.csv
+
+----------------------------------------
+测试集性能:
+----------------------------------------
+     train_auc: 0.8941
+      accuracy: 0.6750
+     precision: 0.6087
+        recall: 0.7778
+            f1: 0.6829
+           auc: 0.7702
+  混淆矩阵:    TN=13 FP=9 | FN=4 TP=14
+已保存: test_predictions_lr.csv, test_confusion_matrix_lr.csv
+
+LR 系数 (top 10):
+       feature  coefficient
+     P02748_C9    -0.305152
+    P02741_CRP    -0.295689
+ Q9HCL0_PCDH18     0.277722
+   P0DJI9_SAA2    -0.272113
+P14555_PLA2G2A    -0.240102
+   P49747_COMP     0.234349
+  P55290_CDH13     0.180673
+   P49356_FNTB    -0.174892
+
+============================================================
+步骤2b：Random Forest（RandomizedSearchCV + LOOCV 评估）
+============================================================
+LASSO 选了 8 个 (<=10), 全部使用
+5-fold CV AUC (pre-search): 0.8136 (+/- 0.2241)
+
+RandomizedSearchCV best score: 0.8361
+最优参数: {'n_estimators': 200, 'min_samples_split': 5, 'min_samples_leaf': 4, 'max_features': 'sqrt', 'max_depth': 10}
+
+----------------------------------------
+训练集性能:
+----------------------------------------
+  AUC:         0.9888
+  混淆矩阵:    TN=46 FP=4 | FN=2 TP=39
+已保存: train_predictions_rf.csv, train_confusion_matrix_rf.csv
+
+----------------------------------------
+测试集性能:
+----------------------------------------
+     train_auc: 0.9888
+      accuracy: 0.6500
+     precision: 0.5909
+        recall: 0.7222
+            f1: 0.6500
+           auc: 0.7576
+  混淆矩阵:    TN=13 FP=9 | FN=5 TP=13
+已保存: test_predictions_rf.csv, test_confusion_matrix_rf.csv
+
+RF 特征重要性:
+       feature  importance
+   P0DJI9_SAA2    0.180921
+    P02741_CRP    0.174392
+     P02748_C9    0.133048
+P14555_PLA2G2A    0.131238
+   P49747_COMP    0.127560
+ Q9HCL0_PCDH18    0.102356
+  P55290_CDH13    0.084181
+   P49356_FNTB    0.066305
+已保存: rf_importance_rf.csv
+
+============================================================
+生成可视化...
+============================================================
+已保存: lasso_coefficients_lr.csv
+已保存: lr_coefficients_lr.csv
+已保存: feature_importance_lr.pdf
+已保存: lr_coefficient_bar_lr.pdf
+已保存: lr_coefficient_bar_lr.csv
+============================================================
+SHAP 特征贡献分析 (LR)
+============================================================
+已保存: shap_bar_train_lr.pdf
+已保存: shap_beeswarm_train_lr.pdf
+已保存: shap_values_train_lr.csv
+已保存: shap_bar_test_lr.pdf
+已保存: shap_beeswarm_test_lr.pdf
+已保存: shap_values_test_lr.csv
+
+已保存: roc_curve_train_lr.csv
+已保存: roc_curve_test_lr.csv
+已保存: roc_curve_lr.pdf
+已保存: confusion_matrix_train_lr.csv
+已保存: confusion_matrix_test_lr.csv
+已保存: confusion_matrices_lr.pdf
+已保存: rf_importance_bar_rf.pdf
+已保存: rf_importance_bar_rf.csv
+============================================================
+SHAP 特征贡献分析 (RF)
+============================================================
+已保存: shap_bar_train_rf.pdf
+已保存: shap_values_train_rf.csv
+已保存: shap_bar_test_rf.pdf
+已保存: shap_values_test_rf.csv
+
+已保存: roc_curve_train_rf.csv
+已保存: roc_curve_test_rf.csv
+已保存: roc_curve_rf.pdf
+已保存: confusion_matrix_train_rf.csv
+已保存: confusion_matrix_test_rf.csv
+已保存: confusion_matrices_rf.pdf
+
+============================================================
+流程总结
+============================================================
+原始特征数:     76
+预筛选后:       76
+LASSO 选中:     8
+最终 LR 使用:   8
+最终 RF 使用:   8
+总压缩率:       89.5%
+
+========================================
+LR vs RF 性能对比
+========================================
+  指标                 LR       RF
+  ------------------------------
+  train_auc      0.8941   0.9888
+  auc            0.7702   0.7576
+  accuracy       0.6750   0.6500
+  precision      0.6087   0.5909
+  recall         0.7778   0.7222
+  f1             0.6829   0.6500
+========================================
+============================================================
+
+============================================================
+保存模型...
+============================================================
+已保存: final_model_lr.pkl
+已保存: final_model_rf.pkl
+============================================================
