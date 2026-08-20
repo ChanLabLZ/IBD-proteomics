@@ -21,6 +21,6 @@ Additional information is available in the Key Resources Table (see paper).
 The source data is available for each figures and supplementary figures.
 
 ## Cite
-.
+Wu et al., Plasma proteomic signatures for post-treatment status assessment and response prediction in Crohn's disease. 2026. 
 
-[2026/08/17]
+[2026/08/20]
